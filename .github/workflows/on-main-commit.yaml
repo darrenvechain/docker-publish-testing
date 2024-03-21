@@ -11,12 +11,14 @@ jobs:
     name: Generate Tags
     runs-on: ubuntu-latest
     outputs:
-      tag_date: ${{ steps.date.outputs.tag_date }}
-      short_sha: ${{ steps.sha.outputs.short_sha }}
+      tag_date: ${{ steps.tag_date.outputs.tag_date }}
+      short_sha: ${{ steps.short_sha.outputs.short_sha }}
     steps:
-      - id: tag_date
+      - name: Generate Tag Date
+        id: tag_date
         run: echo "tag_date=$(date +'%Y%m%d')" >> "$GITHUB_OUTPUT"
-      - id: short_sha
+      - name: Generate Short SHA
+        id: short_sha
         run: echo "short_sha=$(echo $GITHUB_SHA | cut -c1-7)" >> "$GITHUB_ENV"
 
   publish-docker-image:
