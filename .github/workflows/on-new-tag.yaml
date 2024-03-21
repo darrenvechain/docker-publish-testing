@@ -7,7 +7,7 @@ on:
 
 jobs:
   publish-docker-image:
-    uses: ./.github/workflows/publish-docker-image.yml
+    uses: ./.github/workflows/publish-docker-image.yaml
     secrets: inherit
     with:
       environment: docker-publish
