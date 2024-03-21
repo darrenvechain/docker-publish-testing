@@ -7,7 +7,6 @@ on:
 
 jobs:
 
-
   generate-tags:
     name: Generate Tags
     runs-on: ubuntu-latest
@@ -24,6 +23,7 @@ jobs:
     name: Publish Main Docker Image
     uses: ./.github/workflows/publish-docker-image.yaml
     secrets: inherit
+    needs: generate-tags
     permissions:
       contents: read
       packages: write
@@ -31,6 +31,6 @@ jobs:
       images: |
         ghcr.io/${{ github.repository }}
       tags: |
-        type=raw,value=main-${{ github.sha }}-${{ steps.sha.outputs.tag_date }}-${{ steps.date.outputs.short_sha }}
+        type=raw,value=main-${{ github.sha }}-${{ needs.generate-tags.outputs.tag_date }}-${{ needs.generate-tags.outputs.short_sha }}
         type=sha
         type=raw,value=main-latest
