@@ -1,4 +1,4 @@
-name: On Main Commit
+name: Main CI
 
 on:
   push:
@@ -8,7 +8,7 @@ on:
 jobs:
 
   generate-tags:
-    name: Generate Tags
+    name: Generate Docker Tags
     runs-on: ubuntu-latest
     outputs:
       tag_date: ${{ steps.tag_date.outputs.tag_date }}
@@ -22,7 +22,7 @@ jobs:
         run: echo "short_sha=$(echo $GITHUB_SHA | cut -c1-7)" >> "$GITHUB_OUTPUT"
 
   publish-docker-image:
-    name: Publish Main Docker Image
+    name: Publish Docker Image
     uses: ./.github/workflows/publish-docker-image.yaml
     secrets: inherit
     needs: generate-tags

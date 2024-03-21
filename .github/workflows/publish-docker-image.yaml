@@ -1,4 +1,4 @@
-name: Publish Docker Images
+name: Publish Docker Image
 
 on:
   workflow_call:
@@ -15,6 +15,21 @@ on:
         type: string
         required: true
         description: 'The images to publish'
+  workflow_dispatch:
+    inputs:
+      environment:
+        type: environment
+        required: false
+        description: 'The environment to publish the Docker image to.'
+      tags:
+        type: string
+        required: true
+        description: 'The tags to apply to the Docker image. eg `type=raw,value=my-custom-tag`'
+      images:
+        type: string
+        required: true
+        description: 'The images to publish'
+        default: ghcr.io/${{ github.repository }}
 
 jobs:
   build-and-push-image:
