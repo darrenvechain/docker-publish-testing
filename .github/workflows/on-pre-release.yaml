@@ -6,6 +6,17 @@ on:
       - prereleased
 
 jobs:
+
+#  generate-tags:
+#    name: Generate Tags
+#    runs-on: ubuntu-latest
+#    outputs:
+#      pre_release_tag: ${{ steps.tag_date.outputs.pre_release_tag }}
+#    steps:
+#      - name: Generate Tag
+#        id: pre_release_tag
+#        run: echo "pre_release_tag={{ github.event.release.tag_name }}-rc" >> "$GITHUB_OUTPUT"
+
   publish-docker-image:
     name: Publish Pre-Release Docker Image
     uses: ./.github/workflows/publish-docker-image.yaml
@@ -13,10 +24,11 @@ jobs:
     permissions:
       contents: read
       packages: write
+#    needs: generate-tags
     with:
       environment: docker-publish
       images: |
         ${{ github.repository }}
         ghcr.io/${{ github.repository }}
       tags: |
-        type=raw,value={{ github.event.release.tag_name }}-rc
+        type=raw,value=${{ github.event.release.tag_name }}-rc
