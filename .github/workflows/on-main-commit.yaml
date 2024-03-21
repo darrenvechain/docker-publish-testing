@@ -33,5 +33,5 @@ jobs:
       images: |
         ghcr.io/${{ github.repository }}
       tags: |
-        type=raw,value=main-${{ github.sha }}-${{ needs.generate-tags.outputs.tag_date }}-${{ needs.generate-tags.outputs.short_sha }}
+        type=raw,value=main-${{ needs.generate-tags.outputs.tag_date }}-${{ needs.generate-tags.outputs.short_sha }}
         type=raw,value=main-latest
