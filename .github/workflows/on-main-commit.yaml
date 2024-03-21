@@ -14,9 +14,9 @@ jobs:
       tag_date: ${{ steps.date.outputs.tag_date }}
       short_sha: ${{ steps.sha.outputs.short_sha }}
     steps:
-      - id: date
+      - id: tag_date
         run: echo "tag_date=$(date +'%Y%m%d')" >> "$GITHUB_OUTPUT"
-      - id: sha
+      - id: short_sha
         run: echo "short_sha=$(echo $GITHUB_SHA | cut -c1-7)" >> "$GITHUB_ENV"
 
   publish-docker-image:
@@ -32,5 +32,4 @@ jobs:
         ghcr.io/${{ github.repository }}
       tags: |
         type=raw,value=main-${{ github.sha }}-${{ needs.generate-tags.outputs.tag_date }}-${{ needs.generate-tags.outputs.short_sha }}
-        type=sha
         type=raw,value=main-latest
