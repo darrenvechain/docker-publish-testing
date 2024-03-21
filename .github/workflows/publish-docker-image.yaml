@@ -17,19 +17,11 @@ on:
         description: 'The images to publish'
   workflow_dispatch:
     inputs:
-      environment:
-        type: environment
-        required: false
-        description: 'The environment to publish the Docker image to.'
       tags:
         type: string
         required: true
-        description: 'The tags to apply to the Docker image. eg `type=raw,value=my-custom-tag`'
-      images:
-        type: string
-        required: true
-        description: 'The images to publish'
-        default: ghcr.io/${{ github.repository }}
+        default: 'type=raw,value=my-custom-tag'
+        description: 'eg `type=raw,value=my-custom-tag`. Please refer to https://github.com/docker/metadata-action?tab=readme-ov-file#tags-input'
 
 jobs:
   build-and-push-image:
@@ -43,6 +35,8 @@ jobs:
     environment: ${{ inputs.environment }}
 
     steps:
+      # if the trigger is workflow_dispatch and the tag is latest
+
       - name: Checkout Repo
         uses: actions/checkout@v4
 
@@ -71,7 +65,7 @@ jobs:
         id: meta
         uses: docker/metadata-action@v4
         with:
-          images: ${{ inputs.images }}
+          images: ${{ inputs.images || ghcr.io/${{ github.repository }} }}
           tags: ${{ inputs.tags }}
 
       - name: Push to Registry(s)
