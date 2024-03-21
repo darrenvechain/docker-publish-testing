@@ -56,9 +56,7 @@ jobs:
         id: meta
         uses: docker/metadata-action@v4
         with:
-          images: |
-            ${{ github.repository }}
-            ghcr.io/${{ github.repository }}
+          images: ${{ inputs.images }}
 
       - name: Push to Registry(s)
         uses: docker/build-push-action@v5
