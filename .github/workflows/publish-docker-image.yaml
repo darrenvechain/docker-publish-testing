@@ -16,12 +16,6 @@ on:
         required: true
         description: 'The images to publish'
   workflow_dispatch:
-    inputs:
-      tags:
-        type: string
-        required: true
-        default: 'type=raw,value=my-custom-tag'
-        description: 'eg `type=raw,value=my-custom-tag`. Please refer to https://github.com/docker/metadata-action?tab=readme-ov-file#tags-input'
 
 jobs:
   build-and-push-image:
@@ -35,7 +29,6 @@ jobs:
     environment: ${{ inputs.environment }}
 
     steps:
-      # if the trigger is workflow_dispatch and the tag is latest
 
       - name: Checkout Repo
         uses: actions/checkout@v4
@@ -53,20 +46,22 @@ jobs:
           username: ${{ github.actor }}
           password: ${{ secrets.GITHUB_TOKEN }}
 
-#      - name: Log in to Docker Hub
-#        # Only log in to Docker Hub if the event is a release
-#        if: github.event_name == 'release'
-#        uses: docker/login-action@v2
-#        with:
-#          username: ${{ secrets.DOCKER_USERNAME }}
-#          password: ${{ secrets.DOCKERHUB_TOKEN }}
+      - name: Log in to Docker Hub
+        # Only log in to Docker Hub if the event is a release
+        if: ${{ inputs.environment == 'docker-publish' }}
+        uses: docker/login-action@v2
+        with:
+          username: ${{ secrets.DOCKER_USERNAME }}
+          password: ${{ secrets.DOCKERHUB_TOKEN }}
 
       - name: Extract metadata (tags, labels) for Docker
         id: meta
         uses: docker/metadata-action@v4
         with:
-          images: ${{ inputs.images || ghcr.io/${{ github.repository }} }}
-          tags: ${{ inputs.tags }}
+          # default to ghcr.io for workflow_dispatch
+          images: ${{ inputs.images || 'ghcr.io' + github.repository }}
+          # use the branch + sha if workflow_dispatch
+          tags: ${{ inputs.tags || 'type=raw,value=' + github.ref + '-' + github.sha  }}
 
       - name: Push to Registry(s)
         uses: docker/build-push-action@v5
