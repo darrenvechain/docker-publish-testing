@@ -9,3 +9,6 @@ jobs:
   publish-docker-image:
     uses: ./.github/workflows/publish-docker-image.yaml
     secrets: inherit
+    permissions:
+      contents: read
+      packages: write
