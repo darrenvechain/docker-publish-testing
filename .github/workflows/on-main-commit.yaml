@@ -13,3 +13,6 @@ jobs:
     permissions:
       contents: read
       packages: write
+    with:
+      images: |
+        ghcr.io/${{ github.repository }}

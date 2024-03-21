@@ -7,6 +7,14 @@ on:
         type: string
         required: false
         description: 'The environment to publish the Docker image to.'
+#      tags:
+#        type: string
+#        required: true
+#        description: 'The tags to apply to the Docker image.'
+      images:
+        type: string
+        required: true
+        description: 'The images to publish'
 
 jobs:
   build-and-push-image:
