@@ -19,7 +19,7 @@ jobs:
         run: echo "tag_date=$(date +'%Y%m%d')" >> "$GITHUB_OUTPUT"
       - name: Generate Short SHA
         id: short_sha
-        run: echo "short_sha=$(echo $GITHUB_SHA | cut -c1-7)" >> "$GITHUB_ENV"
+        run: echo "short_sha=$(echo $GITHUB_SHA | cut -c1-7)" >> "$GITHUB_OUTPUT"
 
   publish-docker-image:
     name: Publish Main Docker Image
