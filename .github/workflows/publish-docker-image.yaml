@@ -7,10 +7,10 @@ on:
         type: string
         required: false
         description: 'The environment to publish the Docker image to.'
-#      tags:
-#        type: string
-#        required: true
-#        description: 'The tags to apply to the Docker image.'
+      tags:
+        type: string
+        required: true
+        description: 'The tags to apply to the Docker image.'
       images:
         type: string
         required: true
@@ -57,6 +57,7 @@ jobs:
         uses: docker/metadata-action@v4
         with:
           images: ${{ inputs.images }}
+          tags: ${{ inputs.tags }}
 
       - name: Push to Registry(s)
         uses: docker/build-push-action@v5

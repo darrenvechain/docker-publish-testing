@@ -6,6 +6,20 @@ on:
       - 'main'
 
 jobs:
+
+
+  generate-tags:
+    name: Generate Tags
+    runs-on: ubuntu-latest
+    outputs:
+      tag_date: ${{ steps.date.outputs.tag_date }}
+      short_sha: ${{ steps.sha.outputs.short_sha }}
+    steps:
+      - id: date
+        run: echo "tag_date=$(date +'%Y%m%d')" >> "$GITHUB_OUTPUT"
+      - id: sha
+        run: echo "short_sha=$(echo $GITHUB_SHA | cut -c1-7)" >> "$GITHUB_ENV"
+
   publish-docker-image:
     name: Publish Main Docker Image
     uses: ./.github/workflows/publish-docker-image.yaml
@@ -16,3 +30,7 @@ jobs:
     with:
       images: |
         ghcr.io/${{ github.repository }}
+      tags: |
+        type=raw,value=main-${{ github.sha }}-${{ steps.sha.outputs.tag_date }}-${{ steps.date.outputs.short_sha }}
+        type=sha
+        type=raw,value=main-latest
