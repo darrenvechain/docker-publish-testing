@@ -3,16 +3,27 @@ name: Release CI
 on:
   push:
     tags:
-      # Do not run on pre-release tags
-      - '!v*.*.*-rc.*'
       - 'v*.*.*'
 
 jobs:
+
+  validate-tag:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Setup Node
+        uses: actions/setup-node@v3
+        with:
+          node-version: '20'
+      - name: Validate Tag
+        run: |
+          node -e "if (!/^v\d+\.\d+\.\d+$/.test(${{ github.ref_name }})) { console.error('Invalid version provided');process.exit(1);}"
 
   publish-docker-image:
     name: Publish Pre-Release Docker Image
     uses: ./.github/workflows/publish-docker-image.yaml
     secrets: inherit
+    needs: 
+      - validate-tag
     permissions:
       contents: read
       packages: write
