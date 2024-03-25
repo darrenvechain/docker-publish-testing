@@ -1,9 +1,11 @@
 name: Release CI
 
 on:
-  release:
-    types:
-      - released
+  push:
+    tags:
+      # Do not run on pre-release tags
+      - '!v*.*.*-rc.*'
+      - 'v*.*.*'
 
 jobs:
 
@@ -20,5 +22,5 @@ jobs:
         ${{ github.repository }}
         ghcr.io/${{ github.repository }}
       tags: |
-        type=raw,value=${{ github.event.release.tag_name }}
+        type=raw,value=${{ github.ref_name }}
         type=raw,value=latest
