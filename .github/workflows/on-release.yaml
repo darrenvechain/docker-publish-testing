@@ -9,8 +9,8 @@ on:
 jobs:
   validate:
     runs-on: ubuntu-latest
+    name: Validate Release
     steps:
-
       - name: Checkout
         uses: actions/checkout@v4
 
