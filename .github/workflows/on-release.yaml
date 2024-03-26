@@ -34,14 +34,7 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
-          response=$(gh release view ${{ github.ref_name }} --json isPrerelease)
-
-          echo "$response" | jq 
-
-          prerelease=$(echo "$response" | jq -r '.isPrerelease')
-
-          echo "Prerelease: $prerelease"
-
+          prerelease=$(gh release view ${{ github.ref_name }} --json isPrerelease | jq -r '.isPrerelease')
           if [ "$prerelease" != "false" ]; then
             echo "Tag is not an official release"
             exit 1
