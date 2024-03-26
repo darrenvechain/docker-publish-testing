@@ -19,7 +19,13 @@ jobs:
             -H "Accept: application/vnd.github+json" \
             -H "X-GitHub-Api-Version: 2022-11-28" \
             /repos/${{ github.repository }}/git/ref/tags/${{ github.ref_name }})
+
+          echo "$response" | jq 
+
           prerelease=$(echo "$response" | jq -r '.prerelease')
+
+          echo "Prerelease: $prerelease"
+          
           if [ "$prerelease" != "true" ]; then
             echo "Tag is not a pre-release"
             exit 1
