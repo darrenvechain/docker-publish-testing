@@ -6,6 +6,23 @@ on:
       - 'v*.*.*-rc.*'
 
 jobs:
+
+  validate-tag:
+    name: Validate Tag
+    runs-on: ubuntu-latest
+    steps:
+      - name: Validate Tag
+        run: |
+          response=$(gh api \
+            -H "Accept: application/vnd.github+json" \
+            -H "X-GitHub-Api-Version: 2022-11-28" \
+            /repos/${{ github.repository }}/git/ref/tags/${{ github.ref_name }})
+          prerelease=$(echo "$response" | jq -r '.prerelease')
+          if [ "$prerelease" != "true" ]; then
+            echo "Tag is not a pre-release"
+            exit 1
+          fi
+
   publish-docker-image:
     name: Publish Pre-Release Docker Image
     uses: ./.github/workflows/publish-docker-image.yaml
@@ -13,6 +30,8 @@ jobs:
     permissions:
       contents: read
       packages: write
+    needs: 
+      - validate-tag
     with:
       environment: docker-publish
       images: |
