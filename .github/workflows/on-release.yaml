@@ -34,15 +34,11 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
-          response=$(gh api \
-            -H "Accept: application/vnd.github+json" \
-            -H "X-GitHub-Api-Version: 2022-11-28" \
-            /repos/${{ github.repository }}/git/ref/tags/${{ github.ref_name }})
-          prerelease=$(echo "$response" | jq -r '.prerelease')
+          response=$(gh release view ${{ github.ref_name }} --json isPrerelease)
 
           echo "$response" | jq 
 
-          prerelease=$(echo "$response" | jq -r '.prerelease')
+          prerelease=$(echo "$response" | jq -r '.isPrerelease')
 
           echo "Prerelease: $prerelease"
 
