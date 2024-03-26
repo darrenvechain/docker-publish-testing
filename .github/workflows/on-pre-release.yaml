@@ -7,11 +7,13 @@ on:
 
 jobs:
 
-  validate-tag:
+  validate:
     name: Validate Tag
     runs-on: ubuntu-latest
     steps:
       - name: Validate Tag
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
           response=$(gh api \
             -H "Accept: application/vnd.github+json" \
@@ -22,7 +24,7 @@ jobs:
             echo "Tag is not a pre-release"
             exit 1
           fi
-
+        
   publish-docker-image:
     name: Publish Pre-Release Docker Image
     uses: ./.github/workflows/publish-docker-image.yaml
@@ -31,7 +33,7 @@ jobs:
       contents: read
       packages: write
     needs: 
-      - validate-tag
+      - validate
     with:
       environment: docker-publish
       images: |

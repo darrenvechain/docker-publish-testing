@@ -4,34 +4,48 @@ on:
   push:
     tags:
       - 'v*.*.*'
-    tags-ignore:
-      - 'v*.*.*-rc.*'
+      - '!v*.*.*-rc*'
 
 jobs:
-  validate-tag:
+  validate:
     runs-on: ubuntu-latest
     steps:
       - name: Setup Node
         uses: actions/setup-node@v3
         with:
           node-version: '20'
+
       - name: Validate Tag
-      # Ensure the tag is a valid version
         run: |
           node -e "if (!/^v\d+\.\d+\.\d+$/.test('${{ github.ref_name }}')) { console.error('Invalid version provided');process.exit(1);}"
-      # Ensure the tag matches the VERSION file
+
       - name: Validate VERSION
         run: |
           if [ "$(cat cmd/thor/VERSION)" != "${{ github.ref_name }}" ]; then
             echo "VERSION file does not match tag"
             exit 1
           fi
+
+      - name: Validate Release
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          response=$(gh api \
+            -H "Accept: application/vnd.github+json" \
+            -H "X-GitHub-Api-Version: 2022-11-28" \
+            /repos/${{ github.repository }}/git/ref/tags/${{ github.ref_name }})
+          prerelease=$(echo "$response" | jq -r '.prerelease')
+          if [ "$prerelease" != "false" ]; then
+            echo "Tag is not a pre-release"
+            exit 1
+          fi
+
   publish-docker-image:
     name: Publish Pre-Release Docker Image
     uses: ./.github/workflows/publish-docker-image.yaml
     secrets: inherit
     needs: 
-      - validate-tag
+      - validate
     permissions:
       contents: read
       packages: write
