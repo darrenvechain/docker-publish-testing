@@ -40,7 +40,7 @@ jobs:
             /repos/${{ github.repository }}/git/ref/tags/${{ github.ref_name }})
           prerelease=$(echo "$response" | jq -r '.prerelease')
           if [ "$prerelease" != "false" ]; then
-            echo "Tag is not a pre-release"
+            echo "Tag is not an official release"
             exit 1
           fi
 
