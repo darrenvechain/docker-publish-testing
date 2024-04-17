@@ -25,7 +25,8 @@ jobs:
 
       - name: Validate VERSION
         run: |
-          if [ format('v{0}', "$(cat cmd/thor/VERSION)") != "${{ github.ref_name }}" ]; then
+          version=$(cat cmd/thor/VERSION)
+          if [ endsWith(${{ github.ref_name }}, $version) ]; then
             echo "VERSION file does not match tag"
             exit 1
           fi
